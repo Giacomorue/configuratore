@@ -8,6 +8,8 @@ function Configurator() {
   const {
     model,
     setModel,
+    color,
+    setColor,
     oversides,
     setOversides,
     rear,
@@ -31,26 +33,97 @@ function Configurator() {
   return (
     <div className="lg:p-16 p-1 lg:w-[50%] w-[100%] lg:h-full h-[50%]">
       <div className='w-full h-full  overflow-y-auto'>
-      {/* <div className='text-center space-y-3 pb-5'>
-        <p>Colore</p>
-        <div className='flex flex-row gap-3 items-center justify-center flex-wrap'>
-          <Button
-            text="Green"
-            onChange={() => setModel("Green")}
-            isActive={model === "Green"}
-          />
-          <Button
-            text="Black"
-            onChange={() => setModel("Black")}
-            isActive={model === "Black"}
-          />
-          <Button
-            text="Blue"
-            onChange={() => setModel("Blue")}
-            isActive={model === "Blue"}
-          />
+        <div className='text-center space-y-3 pb-5'>
+          <p>Modello</p>
+          <div className='flex flex-row gap-3 items-center justify-center flex-wrap'>
+            <Button
+              text="RA200-5"
+              onChange={() => setModel("RA200-5")}
+              isActive={model === "RA200-5"}
+            />
+            <Button
+              text="RA200-6"
+              onChange={() => setModel("RA200-6")}
+              isActive={model === "RA200-6"}
+            />
+            <Button
+              text="RA300-6"
+              onChange={() => setModel("RA300-6")}
+              isActive={model === "RA300-6"}
+            />
+            <Button
+              text="RA300-7"
+              onChange={() => setModel("RA300-7")}
+              isActive={model === "RA300-7"}
+            />
+            <Button
+              text="RA300-8"
+              onChange={() => setModel("RA300-8")}
+              isActive={model === "RA300-8"}
+            />
+            <Button
+              text="RA400-8"
+              onChange={() => setModel("RA400-8")}
+              isActive={model === "RA400-8"}
+            />
+            <Button
+              text="RA400-9"
+              onChange={() => setModel("RA400-9")}
+              isActive={model === "RA400-9"}
+            />
+          </div>
         </div>
-      </div> */}
+
+        <div className='text-center space-y-3 pb-5'>
+          <p>Colore</p>
+          <div className='flex flex-row gap-3 items-center justify-center flex-wrap'>
+            <Button
+              text="Basic"
+              onChange={() => setColor("Basic")}
+              isActive={color === "Basic"}
+            />
+            <Button
+              text="Black"
+              onChange={() => setColor("Black")}
+              isActive={color === "Black"}
+            />
+            <Button
+              text="Blue"
+              onChange={() => setColor("Blue")}
+              isActive={color === "Blue"}
+            />
+            <Button
+              text="Fendt"
+              onChange={() => setColor("Fendt")}
+              isActive={color === "Fendt"}
+            />
+            <Button
+              text="Inox"
+              onChange={() => setColor("Inox")}
+              isActive={color === "Inox"}
+            />
+            <Button
+              text="John"
+              onChange={() => setColor("John")}
+              isActive={color === "John"}
+            />
+            <Button
+              text="Red"
+              onChange={() => setColor("Red")}
+              isActive={color === "Red"}
+            />
+            <Button
+              text="Zinc"
+              onChange={() => setColor("Zinc")}
+              isActive={color === "Zinc"}
+            />
+            <Button
+              text="Con Scritte"
+              onChange={() => setColor("Con Scritte")}
+              isActive={color === "Con Scritte"}
+            />
+          </div>
+        </div>
 
         <div className='text-center space-y-3 pb-5'>
           <p>Portellone posteriore</p>

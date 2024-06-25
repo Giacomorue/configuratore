@@ -1,8 +1,10 @@
 import { create } from "zustand"
 
 type Trailer = {
-  model: string,
-  setModel: (value: string) => void,
+  model: "RA200-5" | "RA200-6" | "RA300-6" | "RA300-7" | "RA300-8" | "RA400-8" | "RA400-9",
+  setModel: (value: "RA200-5" | "RA200-6" | "RA300-6" | "RA300-7" | "RA300-8" | "RA400-8" | "RA400-9") => void,
+  color: "Black" | "Red" | "Basic" | "Blue" | "John" | "Inox" | "Fendt" | "Zinc" | "Con Scritte",
+  setColor: (value: "Black" | "Red" | "Basic" | "Blue" | "John" | "Inox" | "Fendt" | "Zinc" | "Con Scritte") => void,
   oversides: "No" | "50cm" | "50+35cm",
   setOversides: (value: "No" | "50cm" | "50+35cm") => void,
   rear: "Normal" | "Oversized",
@@ -24,8 +26,10 @@ type Trailer = {
 }
 
 export const useTrailer = create<Trailer>((set) => ({
-  model: "Green",
-  setModel: (value: string) => set(state => ({model: value})),
+  model: "RA300-7",
+  setModel: (value) => set(state => ({model: value})),
+  color: "Black",
+  setColor: (value) => set(state => ({ color: value })),
   oversides: "50cm",
   setOversides: (value) => set((state) => ({oversides: value})),
   rear: "Normal",
@@ -34,7 +38,7 @@ export const useTrailer = create<Trailer>((set) => ({
   setBavero: (value) => set((state) => ({bavero: value})),
   motor: "Motor_1",
   setMotore: (value) => set((state) => ({motor: value})),
-  cover: "No",
+  cover: "Cover_1",
   setCover: (value) => set((state) => ({cover: value})),
   suspensions: "No",
   setSuspensions: (value) => set((state) => ({suspensions: value})),
