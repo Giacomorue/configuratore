@@ -1,7 +1,9 @@
 import Button from "@/components/Button";
 import Configurator from "@/components/Configurator";
-import Trailer from "@/components/TrailerCanvas";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const Trailer = dynamic(() => import('@/components/TrailerCanvas'), { ssr: false });
 
 export default function Home() {
   return (
