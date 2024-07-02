@@ -2,8 +2,11 @@ import Button from "@/components/Button";
 import Configurator from "@/components/Configurator";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-const Trailer = dynamic(() => import('@/components/TrailerCanvas'), { ssr: false });
+const Trailer = dynamic(() => import("@/components/TrailerCanvas"), {
+  ssr: false,
+});
 
 export default function Home() {
   return (

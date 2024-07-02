@@ -1,24 +1,8 @@
 import { create } from "zustand"
 
 type Trailer = {
-  model:
-    | "RA200-5"
-    | "RA200-6"
-    | "RA300-6"
-    | "RA300-7"
-    | "RA300-8"
-    | "RA400-8"
-    | "RA400-9";
-  setModel: (
-    value:
-      | "RA200-5"
-      | "RA200-6"
-      | "RA300-6"
-      | "RA300-7"
-      | "RA300-8"
-      | "RA400-8"
-      | "RA400-9"
-  ) => void;
+  model: "1" | "2" | "3";
+  setModel: (value: "1" | "2" | "3") => void;
   color: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
   setColor: (value: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8") => void;
   oversides: "No" | "50cm" | "50+35cm";
@@ -40,13 +24,12 @@ type Trailer = {
   assistedSteering: "No" | "Si";
   setAssistedSteering: (value: "No" | "Si") => void;
 
-
   data: any;
   setData: (value: any) => void;
 };
 
 export const useTrailer = create<Trailer>((set) => ({
-  model: "RA300-7",
+  model: "1",
   setModel: (value) => set(state => ({model: value})),
   color: "1",
   setColor: (value) => set(state => ({ color: value })),

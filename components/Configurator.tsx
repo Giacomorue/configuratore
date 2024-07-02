@@ -5,13 +5,13 @@ import Button from "./Button";
 import { useEffect } from "react";
 
 function Configurator() {
-  const { color, setColor, data, setData } = useTrailer();
+  const { color, setColor, data, setData, setModel, model } = useTrailer();
 
   useEffect(() => {
     setData({
       motor: "Motor_1",
       motor3_conf: "Motor_3_Conf_01",
-      arm: "B220",
+      arm: "No",
       turbo: "No",
       assisted_steering: "No",
       second_stand_foot: "No",
@@ -28,48 +28,28 @@ function Configurator() {
   return (
     <div className="lg:p-16 p-1 lg:w-[50%] w-[100%] lg:h-full h-[50%]">
       <div className="w-full h-full  overflow-y-auto">
-        {/* <div className='text-center space-y-3 pb-5'>
+        <div className='text-center space-y-3 pb-5'>
           <p>Modello</p>
           <div className='flex flex-row gap-3 items-center justify-center flex-wrap'>
             <Button
-              text="RA200-5"
-              onChange={() => setModel("RA200-5")}
-              isActive={model === "RA200-5"}
+              text="2 Assi"
+              onChange={() => setModel("1")}
+              isActive={model === "1"}
             />
             <Button
-              text="RA200-6"
-              onChange={() => setModel("RA200-6")}
-              isActive={model === "RA200-6"}
+              text="3 Assi"
+              onChange={() => setModel("2")}
+              isActive={model === "2"}
             />
             <Button
-              text="RA300-6"
-              onChange={() => setModel("RA300-6")}
-              isActive={model === "RA300-6"}
-            />
-            <Button
-              text="RA300-7"
-              onChange={() => setModel("RA300-7")}
-              isActive={model === "RA300-7"}
-            />
-            <Button
-              text="RA300-8"
-              onChange={() => setModel("RA300-8")}
-              isActive={model === "RA300-8"}
-            />
-            <Button
-              text="RA400-8"
-              onChange={() => setModel("RA400-8")}
-              isActive={model === "RA400-8"}
-            />
-            <Button
-              text="RA400-9"
-              onChange={() => setModel("RA400-9")}
-              isActive={model === "RA400-9"}
+              text="4 Assi"
+              onChange={() => setModel("3")}
+              isActive={model === "3"}
             />
           </div>
         </div>
 
-        <div className='text-center space-y-3 pb-5'>
+        {/* <div className='text-center space-y-3 pb-5'>
           <p>Colore</p>
           <div className='flex flex-row gap-3 items-center justify-center flex-wrap'>
             <Button

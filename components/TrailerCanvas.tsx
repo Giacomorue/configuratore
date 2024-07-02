@@ -1,18 +1,13 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
 import {
-  AccumulativeShadows,
+  Bounds,
   Center,
   Environment,
-  MeshReflectorMaterial,
   OrbitControls,
   PerspectiveCamera,
-  Preload,
-  RandomizedLight,
-  Shadow,
-  useGLTF,
 } from "@react-three/drei";
 import { Vector3 } from "three";
 import CanvasLoader from "./CanvasLoader";
@@ -21,21 +16,20 @@ import Image from "next/image";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useLoader } from "@react-three/fiber";
+import * as THREE from "three";
 
 const MeshBotte = () => {
-  const { color, data } = useTrailer();
+  const { color, data, model } = useTrailer();
 
   const gltf = useLoader(
     GLTFLoader,
-    "V3 Scheme_0" + color + ".glb",
+    "V" + model + "_Scheme_0" + color + "-transformed.glb",
     (loader) => {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("/draco-gltf/"); // Assicurati che questo percorso corrisponda alla posizione dei file decoder Draco
       loader.setDRACOLoader(dracoLoader);
     }
   );
-
-  console.log(gltf.nodes);
 
   useEffect(() => {
     gltf.nodes["Main_Body"].visible = true;
@@ -48,25 +42,20 @@ const MeshBotte = () => {
     // gltf.nodes["Solivator"].visible = false;
 
     if (data.motor === "Motor_1") {
-      gltf.nodes["Motor-03"].visible = false;
-      gltf.nodes["Motor_3_Conf_01"].visible = false;
-      gltf.nodes["Motor_3_Conf_02"].visible = false;
       gltf.nodes["Motor1"].visible = true;
-      gltf.nodes["Motor2"].visible = false;
-    }
-    if (data.motor === "Motor_2") {
-      gltf.nodes["Motor-03"].visible = false;
-      gltf.nodes["Motor_3_Conf_01"].visible = false;
-      gltf.nodes["Motor_3_Conf_02"].visible = false;
+    } else {
       gltf.nodes["Motor1"].visible = false;
+    }
+
+    if (data.motor === "Motor_2") {
       gltf.nodes["Motor2"].visible = true;
+    } else {
+      gltf.nodes["Motor2"].visible = false;
     }
     if (data.motor === "Motor_3") {
       gltf.nodes["Motor-03"].visible = true;
       gltf.nodes["Motor_3_Conf_01"].visible = true;
       gltf.nodes["Motor_3_Conf_02"].visible = true;
-      gltf.nodes["Motor1"].visible = false;
-      gltf.nodes["Motor2"].visible = false;
 
       if (data.motor3_conf === "Motor_3_Conf_01") {
         gltf.nodes["Motor_3_Conf_01"].visible = true;
@@ -75,6 +64,12 @@ const MeshBotte = () => {
         gltf.nodes["Motor_3_Conf_01"].visible = false;
         gltf.nodes["Motor_3_Conf_02"].visible = true;
       }
+    } else {
+      gltf.nodes["Motor-03"].visible = false;
+      gltf.nodes["Motor_3_Conf_01"].visible = false;
+      gltf.nodes["Motor_3_Conf_02"].visible = false;
+      gltf.nodes["Motor_3_Conf_01"].visible = false;
+      gltf.nodes["Motor_3_Conf_02"].visible = false;
     }
 
     if (data.arm === "No") {
@@ -172,11 +167,10 @@ const MeshBotte = () => {
       }
     }
 
-    if(data.wheel === "Stradal"){
+    if (data.wheel === "Stradal") {
       gltf.nodes["Stradal_Wheel_First"].visible = true;
       gltf.nodes["Stradal_Wheel_Second"].visible = true;
-    }
-    else{
+    } else {
       gltf.nodes["Stradal_Wheel_First"].visible = false;
       gltf.nodes["Stradal_Wheel_Second"].visible = false;
     }
@@ -184,8 +178,7 @@ const MeshBotte = () => {
     if (data.wheel === "Normal") {
       gltf.nodes["Normal_Wheel_First"].visible = true;
       gltf.nodes["Normal_Wheel_Second"].visible = true;
-    }
-    else {
+    } else {
       gltf.nodes["Normal_Wheel_First"].visible = false;
       gltf.nodes["Normal_Wheel_Second"].visible = false;
     }
@@ -193,67 +186,61 @@ const MeshBotte = () => {
     if (data.wheel === "Oversized") {
       gltf.nodes["Oversized_Wheel_First"].visible = true;
       gltf.nodes["Oversized_Wheel_Second"].visible = true;
-    }
-    else {
+    } else {
       gltf.nodes["Oversized_Wheel_First"].visible = false;
       gltf.nodes["Oversized_Wheel_Second"].visible = false;
     }
 
-    if (data.assisted_steering === "No"){
+    if (data.assisted_steering === "No") {
       gltf.nodes["Assisted_Steering"].visible = false;
-    }else{
+    } else {
       gltf.nodes["Assisted_Steering"].visible = true;
     }
 
-    if (data.second_stand_foot === "No"){
+    if (data.second_stand_foot === "No") {
       gltf.nodes["Seconf_Stand_Foot"].visible = false;
-    }else {
+    } else {
       gltf.nodes["Seconf_Stand_Foot"].visible = true;
     }
 
-    if (data.second_exit === "No"){
+    if (data.second_exit === "No") {
       gltf.nodes["Secondary_Close001"].visible = false;
       gltf.nodes["Secondary_Close002"].visible = false;
-    }
-    else{
+    } else {
       gltf.nodes["Secondary_Close001"].visible = true;
       gltf.nodes["Secondary_Close002"].visible = true;
     }
 
-    if (data.top_azoto === "No"){
+    if (data.top_azoto === "No") {
       gltf.nodes["Top_Cylinder"].visible = false;
-    }
-    else{
+    } else {
       gltf.nodes["Top_Cylinder"].visible = true;
     }
 
     if (data.suspension === "No") {
       gltf.nodes["Suspension"].visible = false;
-    }
-    else {
+    } else {
       gltf.nodes["Suspension"].visible = true;
     }
 
-    if(data.sollevator === "No"){
+    if (data.sollevator === "No") {
       gltf.nodes["Solivator"].visible = false;
       gltf.nodes["Separate_Funnel_Bar"].visible = true;
-    }else{
+    } else {
       gltf.nodes["Solivator"].visible = true;
       gltf.nodes["Separate_Funnel_Bar"].visible = false;
     }
 
-    if (data.backConf === "Ripper01"){
-      if(data.sollevator === "Si"){
+    if (data.backConf === "Ripper01") {
+      if (data.sollevator === "Si") {
         gltf.nodes["Configuration_02"].visible = true;
         gltf.nodes["Configuration_12"].visible = false;
-      }
-      else{
+      } else {
         gltf.nodes["Configuration_02"].visible = false;
         gltf.nodes["Configuration_12"].visible = true;
         gltf.nodes["Separate_Funnel_Bar"].visible = false;
       }
-    }
-    else{
+    } else {
       gltf.nodes["Configuration_02"].visible = false;
       gltf.nodes["Configuration_12"].visible = false;
     }
@@ -262,85 +249,71 @@ const MeshBotte = () => {
       if (data.sollevator === "Si") {
         gltf.nodes["Configuration_03"].visible = true;
         gltf.nodes["Configuration_05"].visible = false;
-      }
-      else {
+      } else {
         gltf.nodes["Configuration_03"].visible = false;
         gltf.nodes["Configuration_05"].visible = true;
         gltf.nodes["Separate_Funnel_Bar"].visible = false;
       }
-    }
-    else {
+    } else {
       gltf.nodes["Configuration_03"].visible = false;
       gltf.nodes["Configuration_05"].visible = false;
     }
 
-    if(data.backConf === "Ripper03") {
+    if (data.backConf === "Ripper03") {
       if (data.sollevator === "Si") {
         gltf.nodes["Configuration_06"].visible = true;
-      }
-      else {
+      } else {
         gltf.nodes["Configuration_06"].visible = false;
       }
-    }
-    else{
+    } else {
       gltf.nodes["Configuration_06"].visible = false;
     }
 
-    if(data.backConf === "Dischiera02"){
+    if (data.backConf === "Dischiera02") {
       if (data.sollevator === "Si") {
         gltf.nodes["Configuration_08"].visible = true;
-      }
-      else {
+      } else {
         gltf.nodes["Configuration_08"].visible = false;
       }
-    }
-    else{
+    } else {
       gltf.nodes["Configuration_08"].visible = false;
     }
 
     if (data.backConf === "Dischiera01") {
       if (data.sollevator === "Si") {
         gltf.nodes["Configuration_09"].visible = true;
-      }
-      else {
+      } else {
         gltf.nodes["Configuration_09"].visible = false;
       }
-    }
-    else {
+    } else {
       gltf.nodes["Configuration_09"].visible = false;
     }
 
-
-    if (data.barraRaso === "Daniele"){
+    if (data.barraRaso === "Daniele") {
       gltf.nodes["Configuration_04"].visible = true;
-    }
-    else{
+    } else {
       gltf.nodes["Configuration_04"].visible = false;
     }
 
-    if(data.barraRaso === "grande"){
+    if (data.barraRaso === "grande") {
       gltf.nodes["Configuration_10"].visible = true;
       gltf.nodes["Separate_Funnel_Bar"].visible = false;
-    }
-    else{
+    } else {
       gltf.nodes["Configuration_10"].visible = false;
     }
 
-    if (data.barraRaso === "6uscite"){
+    if (data.barraRaso === "6uscite") {
       gltf.nodes["Configuration_07"].visible = true;
-    }
-    else{
+    } else {
       gltf.nodes["Configuration_07"].visible = false;
     }
 
     if (data.barraRaso === "sollevator") {
       gltf.nodes["Configuration_11"].visible = true;
-    }
-    else {
+    } else {
       gltf.nodes["Configuration_11"].visible = false;
     }
-
-  }, [color, data]);
+  }, [color, data, model]);
 
   return (
     <>
@@ -359,8 +332,6 @@ const MeshBotte = () => {
 };
 
 export default function TrailerCanvas() {
-  const { color } = useTrailer();
-
   const div = useRef<HTMLDivElement>(null);
 
   return (
@@ -370,10 +341,12 @@ export default function TrailerCanvas() {
           <ambientLight intensity={3} />
           <Environment preset="studio" />
           <Pavimento />
-          <Center>
-            <MeshBotte />
-          </Center>
-          <PerspectiveCamera makeDefault fov={30} position={[45, 0, -20]} />
+          <Bounds observe fit>
+            <Center>
+              <MeshBotte />
+            </Center>
+          </Bounds>
+          <PerspectiveCamera makeDefault fov={20} position={[-25, 0, 25]} />
         </Suspense>
       </Canvas>
     </div>
