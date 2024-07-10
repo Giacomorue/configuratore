@@ -359,8 +359,8 @@ export default function TrailerCanvas() {
             shadow-camera-bottom={-50}
           />
           <OrbitControls
-            enablePan={true}
-            zoomToCursor={true}
+            enablePan={false}
+            zoomToCursor={false}
             enableZoom={true}
             minPolarAngle={Math.PI / 2.3}
             maxPolarAngle={Math.PI / 2.3}
