@@ -343,7 +343,7 @@ export default function TrailerCanvas() {
             <MeshBotte />
           </Center>
           <Hangar />
-          <Environment preset="studio" />
+          <Environment preset="city" />
           <ContactShadows resolution={1024} frames={1} position={[0, -4, 0]} scale={15} blur={0.7} opacity={0.4} far={20} />
           <ambientLight intensity={0.5} />
           <directionalLight
@@ -362,8 +362,8 @@ export default function TrailerCanvas() {
             enablePan={false}
             zoomToCursor={false}
             enableZoom={true}
-            minPolarAngle={Math.PI / 2.3}
-            maxPolarAngle={Math.PI / 2.3}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 2.1}
           />
           <Leva hidden />
           <PerspectiveCamera position={[-20, 10, 25]} fov={50} makeDefault />
@@ -399,7 +399,7 @@ function Hangar() {
   return (
     <>
       {/* Pavimento */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4, 0]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4.1, 0]} receiveShadow>
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial
           map={colorMap}
