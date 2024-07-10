@@ -10,7 +10,7 @@ const Trailer = dynamic(() => import("@/components/TrailerCanvas"), {
 
 export default function Home() {
   return (
-    <main className="h-[calc(100vh-75px)] w-screen mt-[75px]">
+    <main className="h-full w-full ">
       <div className="flex flex-col h-full lg:flex-row">
         <div className="lg:w-[50%] w-[100%] lg:h-full h-[50%]">
           <Trailer />

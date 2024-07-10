@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 function Navbar() {
   return (
-    <div className='h-[70px] fixed top-0 w-full bg-white border-b border-neutral-300'>
+    <div className='h-[70px] fixed top-0 w-full bg-white border-b border-neutral-300 z-[10000]'>
       <Container className='flex flex-row items-center justify-between px-3'>
         <Image 
           src={"/logo.png"}

@@ -27,7 +27,7 @@ function Configurator() {
 
   return (
     <div className="lg:p-16 p-1 lg:w-[50%] w-[100%] lg:h-full h-[50%]">
-      <div className="w-full h-full  overflow-y-auto">
+      <div className="w-full h-full  overflow-y-auto pt-10">
         <div className='text-center space-y-3 pb-5'>
           <p>Modello</p>
           <div className='flex flex-row gap-3 items-center justify-center flex-wrap'>
