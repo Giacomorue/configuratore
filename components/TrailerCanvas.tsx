@@ -8,6 +8,7 @@ import {
   ContactShadows,
   Environment,
   OrbitControls,
+  PerformanceMonitor,
   PerspectiveCamera,
   RandomizedLight,
   useTexture,
@@ -345,13 +346,13 @@ export default function TrailerCanvas() {
 
   return (
     <div className="w-full h-full relative" ref={div}>
-      <Canvas shadows>
+      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: false }} dpr={[1, 1.5]}  shadows>
         <Suspense fallback={<CanvasLoader />}>
           <Center>
             <MeshBotte />
           </Center>
           <Hangar />
-          <Environment preset="city" />
+          <Environment preset="city" frames={Infinity} />
           <ContactShadows resolution={1024} frames={1} position={[0, -4, 0]} scale={15} blur={0.7} opacity={0.4} far={20} key={shadowCounter} />
           <ambientLight intensity={0.5} />
           <directionalLight
@@ -378,6 +379,7 @@ export default function TrailerCanvas() {
             maxDistance={45}         
           />
           <Leva hidden />
+          <PerformanceMonitor />
           <PerspectiveCamera position={[-20, 10, 25]} fov={50} makeDefault />
         </Suspense>
       </Canvas>
