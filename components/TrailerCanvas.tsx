@@ -25,7 +25,7 @@ const MeshBotte = () => {
 
   const gltf = useLoader(
     GLTFLoader,
-    "V" + model + " Scheme_0" + color + "-transformed.glb",
+    "https://ruetta-bucket.s3.eu-north-1.amazonaws.com/V" + model + " Scheme_0" + color + "-transformed.glb",
     (loader) => {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("/draco-gltf/"); // Assicurati che questo percorso corrisponda alla posizione dei file decoder Draco
@@ -335,6 +335,14 @@ const MeshBotte = () => {
 export default function TrailerCanvas() {
   const div = useRef<HTMLDivElement>(null);
 
+  const { color, model, data } = useTrailer();
+
+  const [shadowCounter, setShadowCounter] = useState(0);
+  
+  useEffect(() => {
+    setShadowCounter(prev => prev + 1); 
+  }, [color, model, data])
+
   return (
     <div className="w-full h-full relative" ref={div}>
       <Canvas shadows>
@@ -344,7 +352,7 @@ export default function TrailerCanvas() {
           </Center>
           <Hangar />
           <Environment preset="city" />
-          <ContactShadows resolution={1024} frames={1} position={[0, -4, 0]} scale={15} blur={0.7} opacity={0.4} far={20} />
+          <ContactShadows resolution={1024} frames={1} position={[0, -4, 0]} scale={15} blur={0.7} opacity={0.4} far={20} key={shadowCounter} />
           <ambientLight intensity={0.5} />
           <directionalLight
             position={[10, 50, 10]}
@@ -364,6 +372,10 @@ export default function TrailerCanvas() {
             enableZoom={true}
             minPolarAngle={Math.PI / 3}
             maxPolarAngle={Math.PI / 2.1}
+            enableDamping={true}     // Abilita il damping
+            dampingFactor={1}      // Fattore di smorzamento
+            minDistance={15}         // Distanza minima della telecamera
+            maxDistance={45}         
           />
           <Leva hidden />
           <PerspectiveCamera position={[-20, 10, 25]} fov={50} makeDefault />
@@ -380,7 +392,17 @@ function Hangar() {
     '/textures/floor1/Tiles002_1K-JPG_Roughness.jpg',
     '/textures/floor1/Tiles002_1K-JPG_Displacement.jpg'
   ]); // Sostituisci con il percorso della tua texture
-  const wallTexture = useTexture('/textures/Plaster001_1K-JPG_Color.jpg'); // Sostituisci con il percorso della tua texture
+  const [
+    wallColorMap,
+    wallNormalMap,
+    wallRoughnessMap,
+    wallDisplacementMap,
+  ] = useTexture([
+    '/textures/wall3/Concrete046_1K-JPG_Color.jpg',
+    '/textures/wall3/Concrete046_1K-JPG_Roughness.jpg',
+    '/textures/wall3/Concrete046_1K-JPG_NormalGL.jpg', // NormalGL for WebGL
+    '/textures/wall3/Concrete046_1K-JPG_Displacement.jpg',
+  ]); // Sostituisci con il percorso della tua texture
 
   // Ripeti la texture per un effetto più realistico
   colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping;
@@ -393,8 +415,15 @@ function Hangar() {
   roughnessMap.repeat.set(10, 10);
   displacementMap.repeat.set(10, 10);
 
-  wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
-  wallTexture.repeat.set(4, 2.5);
+  wallColorMap.wrapS = wallColorMap.wrapT = THREE.RepeatWrapping;
+  wallNormalMap.wrapS = wallNormalMap.wrapT = THREE.RepeatWrapping;
+  wallRoughnessMap.wrapS = wallRoughnessMap.wrapT = THREE.RepeatWrapping;
+  wallDisplacementMap.wrapS = wallDisplacementMap.wrapT = THREE.RepeatWrapping;
+
+  wallColorMap.repeat.set(4, 2.5);
+  wallNormalMap.repeat.set(4, 2.5);
+  wallRoughnessMap.repeat.set(4, 2.5);
+  wallDisplacementMap.repeat.set(4, 2.5);
 
   return (
     <>
@@ -413,19 +442,48 @@ function Hangar() {
       {/* Parete posteriore */}
       <mesh position={[0, 21, -50]} receiveShadow>
         <boxGeometry args={[100, 50, 0.1]} />
-        <meshStandardMaterial map={wallTexture} />
+        <meshStandardMaterial
+          map={wallColorMap}
+          normalMap={wallNormalMap}
+          roughnessMap={wallRoughnessMap}
+          displacementMap={wallDisplacementMap}
+          displacementScale={0.1}
+        />
       </mesh>
 
       {/* Parete sinistra */}
       <mesh position={[-50, 21, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
         <boxGeometry args={[100, 50, 0.1]} />
-        <meshStandardMaterial map={wallTexture} />
+        <meshStandardMaterial
+          map={wallColorMap}
+          normalMap={wallNormalMap}
+          roughnessMap={wallRoughnessMap}
+          displacementMap={wallDisplacementMap}
+          displacementScale={0.1}
+        />
       </mesh>
 
       {/* Parete destra */}
-      <mesh position={[50, 21, 0]} rotation={[0, -Math.PI / 2, 0]}> receiveShadow
+      <mesh position={[50, 21, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
         <boxGeometry args={[100, 50, 0.1]} />
-        <meshStandardMaterial map={wallTexture} />
+        <meshStandardMaterial
+          map={wallColorMap}
+          normalMap={wallNormalMap}
+          roughnessMap={wallRoughnessMap}
+          displacementMap={wallDisplacementMap}
+          displacementScale={0.1}
+        />
+      </mesh>
+
+      <mesh position={[0, 21, 50]} receiveShadow>
+        <boxGeometry args={[100, 50, 0.1]} />
+        <meshStandardMaterial
+          map={wallColorMap}
+          normalMap={wallNormalMap}
+          roughnessMap={wallRoughnessMap}
+          displacementMap={wallDisplacementMap}
+          displacementScale={0.1}
+        />
       </mesh>
     </>
   );
