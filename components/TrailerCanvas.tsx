@@ -346,18 +346,18 @@ export default function TrailerCanvas() {
 
   return (
     <div className="w-full h-full relative" ref={div}>
-      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: false }} dpr={[1, 1.5]}  shadows>
+      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: false }} dpr={[1.6, 2]}  shadows>
         <Suspense fallback={<CanvasLoader />}>
           <Center>
             <MeshBotte />
           </Center>
           <Hangar />
-          <Environment preset="city" frames={Infinity} />
+          {/* <Environment preset="city" frames={Infinity} /> */}
           <ContactShadows resolution={1024} frames={1} position={[0, -4, 0]} scale={15} blur={0.7} opacity={0.4} far={20} key={shadowCounter} />
-          <ambientLight intensity={0.5} />
+          <ambientLight intensity={3.5} />
           <directionalLight
             position={[10, 50, 10]}
-            intensity={1}
+            intensity={3.5}
             castShadow
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}
@@ -366,7 +366,19 @@ export default function TrailerCanvas() {
             shadow-camera-right={50}
             shadow-camera-top={50}
             shadow-camera-bottom={-50}
-          />
+          />  
+          <directionalLight
+            position={[-10, 50, -10]}
+            intensity={3.5}
+            castShadow
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+            shadow-camera-far={100}
+            shadow-camera-left={-50}
+            shadow-camera-right={50}
+            shadow-camera-top={50}
+            shadow-camera-bottom={-50}
+          /> 
           <OrbitControls
             enablePan={false}
             zoomToCursor={false}
@@ -402,7 +414,7 @@ function Hangar() {
   ] = useTexture([
     '/textures/wall3/Concrete046_1K-JPG_Color.jpg',
     '/textures/wall3/Concrete046_1K-JPG_Roughness.jpg',
-    '/textures/wall3/Concrete046_1K-JPG_NormalGL.jpg', // NormalGL for WebGL
+    '/textures/wall3/Concrete046_1K-JPG_NormalGL.jpg',
     '/textures/wall3/Concrete046_1K-JPG_Displacement.jpg',
   ]); // Sostituisci con il percorso della tua texture
 
