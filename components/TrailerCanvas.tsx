@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useRef, useState, useTransition } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import {
   AccumulativeShadows,
   Center,
@@ -20,13 +20,17 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useLoader } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import * as THREE from "three";
+import { OrbitControls as OrbitControls2 } from 'three/examples/jsm/controls/OrbitControls.js';
+import Button from "./Button";
+
+// https://ruetta-bucket.s3.eu-north-1.amazonaws.com
 
 const MeshBotte = () => {
   const { color, data, model } = useTrailer();
 
   const gltf = useLoader(
     GLTFLoader,
-    "https://ruetta-bucket.s3.eu-north-1.amazonaws.com/V" + model + " Scheme_0" + color + "-transformed.glb",
+    "/V" + model + " Scheme_0" + color + "-transformed.glb",
     (loader) => {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("/draco-gltf/"); // Assicurati che questo percorso corrisponda alla posizione dei file decoder Draco
@@ -346,7 +350,7 @@ export default function TrailerCanvas() {
 
   return (
     <div className="w-full h-full relative" ref={div}>
-      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: false }} dpr={[1.6, 2]}  shadows>
+      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: true }} dpr={[1.6, 2]}  shadows>
         <Suspense fallback={<CanvasLoader />}>
           <Center>
             <MeshBotte />
@@ -381,17 +385,19 @@ export default function TrailerCanvas() {
           /> 
           <OrbitControls
             enablePan={false}
-            zoomToCursor={false}
+            zoomToCursor={true}
             enableZoom={true}
-            minPolarAngle={Math.PI / 3}
+            minPolarAngle={Math.PI / 2.5}
             maxPolarAngle={Math.PI / 2.1}
             enableDamping={true}     // Abilita il damping
             dampingFactor={1}      // Fattore di smorzamento
             minDistance={15}         // Distanza minima della telecamera
-            maxDistance={45}         
+            maxDistance={35}    
+            panSpeed={1}     
           />
           <Leva hidden />
           <PerformanceMonitor />
+          {/* <CameraControls /> */}
           <PerspectiveCamera position={[-20, 10, 25]} fov={50} makeDefault />
         </Suspense>
       </Canvas>
@@ -399,12 +405,60 @@ export default function TrailerCanvas() {
   );
 }
 
+// const CameraControls= () => {
+//   const { camera, gl } = useThree();
+//   const controls = useRef<OrbitControls>();
+
+//   useEffect(() => {
+//     const currentControls = new OrbitControls(camera, gl.domElement);
+//     controls.current = currentControls;
+
+//     currentControls.enablePan = true;
+//     currentControls.zoomToCursor = true;
+//     currentControls.enableZoom = true;
+//     currentControls.minPolarAngle = Math.PI / 2.5;
+//     currentControls.maxPolarAngle = Math.PI / 2.1;
+//     currentControls.enableDamping = true;
+//     currentControls.dampingFactor = 1;
+//     currentControls.minDistance = 20;
+//     currentControls.maxDistance = 35;
+
+//     // Limiti del pan
+//     const panLimits = {
+//       minX: -10,
+//       maxX: 10,
+//       minY: -5,
+//       maxY: 5
+//     };
+
+//     // Funzione per applicare i limiti di pan
+//     const applyPanLimits = () => {
+//       const target = currentControls.target;
+//       if (target.x < panLimits.minX) target.x = panLimits.minX;
+//       if (target.x > panLimits.maxX) target.x = panLimits.maxX;
+//       if (target.y < panLimits.minY) target.y = panLimits.minY;
+//       if (target.y > panLimits.maxY) target.y = panLimits.maxY;
+//     };
+
+//     // Listener per gli eventi di controllo
+//     currentControls.addEventListener('change', applyPanLimits);   
+
+//     return () => {
+//       currentControls.removeEventListener('change', applyPanLimits);
+//       currentControls.dispose();
+//     };
+//   }, [camera, gl]);
+
+//   return null;
+// };
+
+
 function Hangar() {
   const [colorMap, normalMap, roughnessMap, displacementMap] = useTexture([
-    '/textures/floor1/Tiles002_1K-JPG_Color.jpg',
-    '/textures/floor1/Tiles002_1K-JPG_NormalGL.jpg',
-    '/textures/floor1/Tiles002_1K-JPG_Roughness.jpg',
-    '/textures/floor1/Tiles002_1K-JPG_Displacement.jpg'
+    '/textures/wall6/Plaster003_1K-JPG_Color.jpg',
+    '/textures/wall6/Plaster003_1K-JPG_NormalGL.jpg',
+    '/textures/wall6/Plaster003_1K-JPG_Roughness.jpg',
+    '/textures/wall6/Plaster003_1K-JPG_Displacement.jpg'
   ]); // Sostituisci con il percorso della tua texture
   const [
     wallColorMap,
@@ -412,10 +466,10 @@ function Hangar() {
     wallRoughnessMap,
     wallDisplacementMap,
   ] = useTexture([
-    '/textures/wall3/Concrete046_1K-JPG_Color.jpg',
-    '/textures/wall3/Concrete046_1K-JPG_Roughness.jpg',
-    '/textures/wall3/Concrete046_1K-JPG_NormalGL.jpg',
-    '/textures/wall3/Concrete046_1K-JPG_Displacement.jpg',
+    '/textures/wall7/PavingStones126B_1K-JPG_Color.jpg',
+    '/textures/wall7/PavingStones126B_1K-JPG_Roughness.jpg',
+    '/textures/wall7/PavingStones126B_1K-JPG_NormalGL.jpg',
+    '/textures/wall7/PavingStones126B_1K-JPG_Displacement.jpg',
   ]); // Sostituisci con il percorso della tua texture
 
   // Ripeti la texture per un effetto più realistico
@@ -434,10 +488,10 @@ function Hangar() {
   wallRoughnessMap.wrapS = wallRoughnessMap.wrapT = THREE.RepeatWrapping;
   wallDisplacementMap.wrapS = wallDisplacementMap.wrapT = THREE.RepeatWrapping;
 
-  wallColorMap.repeat.set(4, 2.5);
-  wallNormalMap.repeat.set(4, 2.5);
-  wallRoughnessMap.repeat.set(4, 2.5);
-  wallDisplacementMap.repeat.set(4, 2.5);
+  wallColorMap.repeat.set(2.5, 1.5);
+  wallNormalMap.repeat.set(2.5, 1.5);
+  wallRoughnessMap.repeat.set(2.5, 1.5);
+  wallDisplacementMap.repeat.set(2.5, 1.5);
 
   return (
     <>
@@ -453,7 +507,7 @@ function Hangar() {
         />
       </mesh>
 
-      {/* Parete posteriore */}
+      {/* Pareti */}
       <mesh position={[0, 21, -50]} receiveShadow>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
@@ -465,7 +519,6 @@ function Hangar() {
         />
       </mesh>
 
-      {/* Parete sinistra */}
       <mesh position={[-50, 21, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
@@ -477,7 +530,6 @@ function Hangar() {
         />
       </mesh>
 
-      {/* Parete destra */}
       <mesh position={[50, 21, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial

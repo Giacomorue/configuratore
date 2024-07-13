@@ -9,9 +9,9 @@ function Configurator() {
 
   useEffect(() => {
     setData({
-      motor: "Motor_1",
+      motor: "Motor_2",
       motor3_conf: "Motor_3_Conf_01",
-      arm: "No",
+      arm: "B220 Maggiorato",
       turbo: "No",
       assisted_steering: "No",
       second_stand_foot: "No",
@@ -19,7 +19,7 @@ function Configurator() {
       wheel: "Oversized",
       top_azoto: "No",
       suspension: "No",
-      sollevator: "No",
+      sollevator: "Si",
       backConf: "Ripper02",
       barraRaso: "No"
     });
