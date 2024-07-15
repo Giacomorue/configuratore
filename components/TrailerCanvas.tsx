@@ -1,13 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState, useTransition } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { MutableRefObject, Suspense, useEffect, useRef, useState, useTransition, lazy } from "react";
+import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import {
   AccumulativeShadows,
   Center,
   ContactShadows,
   Environment,
-  OrbitControls,
   PerformanceMonitor,
   PerspectiveCamera,
   RandomizedLight,
@@ -20,322 +19,11 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useLoader } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import * as THREE from "three";
-import { OrbitControls as OrbitControls2 } from 'three/examples/jsm/controls/OrbitControls.js';
 import Button from "./Button";
 
-// https://ruetta-bucket.s3.eu-north-1.amazonaws.com
+import { OrbitControls } from '@react-three/drei';
 
-const MeshBotte = () => {
-  const { color, data, model } = useTrailer();
-
-  const gltf = useLoader(
-    GLTFLoader,
-    "/V" + model + " Scheme_0" + color + "-transformed.glb",
-    (loader) => {
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath("/draco-gltf/"); // Assicurati che questo percorso corrisponda alla posizione dei file decoder Draco
-      loader.setDRACOLoader(dracoLoader);
-    }
-  );
-
-  useEffect(() => {
-    gltf.nodes["Main_Body"].visible = true;
-    gltf.nodes["Front_Configuration_02"].visible = true;
-    // gltf.nodes["Motor1"].visible = false;
-    gltf.nodes["Top_Pipe_2"].visible = false;
-
-    gltf.nodes["Configuration_13"].visible = false;
-
-    // gltf.nodes["Solivator"].visible = false;
-
-    if (data.motor === "Motor_1") {
-      gltf.nodes["Motor1"].visible = true;
-    } else {
-      gltf.nodes["Motor1"].visible = false;
-    }
-
-    if (data.motor === "Motor_2") {
-      gltf.nodes["Motor2"].visible = true;
-    } else {
-      gltf.nodes["Motor2"].visible = false;
-    }
-    if (data.motor === "Motor_3") {
-      gltf.nodes["Motor-03"].visible = true;
-      gltf.nodes["Motor_3_Conf_01"].visible = true;
-      gltf.nodes["Motor_3_Conf_02"].visible = true;
-
-      if (data.motor3_conf === "Motor_3_Conf_01") {
-        gltf.nodes["Motor_3_Conf_01"].visible = true;
-        gltf.nodes["Motor_3_Conf_02"].visible = false;
-      } else {
-        gltf.nodes["Motor_3_Conf_01"].visible = false;
-        gltf.nodes["Motor_3_Conf_02"].visible = true;
-      }
-    } else {
-      gltf.nodes["Motor-03"].visible = false;
-      gltf.nodes["Motor_3_Conf_01"].visible = false;
-      gltf.nodes["Motor_3_Conf_02"].visible = false;
-      gltf.nodes["Motor_3_Conf_01"].visible = false;
-      gltf.nodes["Motor_3_Conf_02"].visible = false;
-    }
-
-    if (data.arm === "No") {
-      gltf.nodes["Support_Arm_01"].visible = false;
-      gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      gltf.nodes["Support_Arm_02_Conf"].visible = false;
-      gltf.nodes["Support_arm_02"].visible = false;
-      gltf.nodes["Arm_01"].visible = false;
-      gltf.nodes["Arm_02"].visible = false;
-      gltf.nodes["3RD_ARM"].visible = false;
-      gltf.nodes["4TH_ARM"].visible = false;
-      gltf.nodes["Secondary_Close"].visible = true;
-      gltf.nodes["Secondary_Close003"].visible = true;
-    }
-
-    if (data.arm === "B220") {
-      gltf.nodes["Support_Arm_01"].visible = true;
-      gltf.nodes["Support_arm_02"].visible = false;
-      gltf.nodes["Arm_01"].visible = true;
-      gltf.nodes["Arm_02"].visible = false;
-      gltf.nodes["3RD_ARM"].visible = false;
-      gltf.nodes["4TH_ARM"].visible = false;
-      gltf.nodes["Secondary_Close"].visible = false;
-      gltf.nodes["Secondary_Close003"].visible = false;
-
-      if (data.turbo === "No") {
-        gltf.nodes["Support_Arm_02_Conf"].visible = false;
-        gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      } else {
-        gltf.nodes["Support_Arm_02_Conf"].visible = false;
-        gltf.nodes["Support_Arm_01_Conf"].visible = true;
-      }
-    }
-
-    if (data.arm === "B220 Maggiorato") {
-      gltf.nodes["Support_Arm_01"].visible = true;
-      gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      gltf.nodes["Support_arm_02"].visible = false;
-      gltf.nodes["Support_Arm_02_Conf"].visible = false;
-      gltf.nodes["Arm_01"].visible = false;
-      gltf.nodes["Arm_02"].visible = true;
-      gltf.nodes["3RD_ARM"].visible = false;
-      gltf.nodes["4TH_ARM"].visible = false;
-      gltf.nodes["Secondary_Close"].visible = false;
-      gltf.nodes["Secondary_Close003"].visible = false;
-
-      if (data.turbo === "No") {
-        gltf.nodes["Support_Arm_02_Conf"].visible = false;
-        gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      } else {
-        gltf.nodes["Support_Arm_02_Conf"].visible = false;
-        gltf.nodes["Support_Arm_01_Conf"].visible = true;
-      }
-    }
-
-    if (data.arm === "B250") {
-      gltf.nodes["Support_Arm_01"].visible = false;
-      gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      gltf.nodes["Support_arm_02"].visible = true;
-      gltf.nodes["Support_Arm_02_Conf"].visible = false;
-      gltf.nodes["Arm_01"].visible = false;
-      gltf.nodes["Arm_02"].visible = false;
-      gltf.nodes["3RD_ARM"].visible = true;
-      gltf.nodes["4TH_ARM"].visible = false;
-      gltf.nodes["Secondary_Close"].visible = false;
-      gltf.nodes["Secondary_Close003"].visible = false;
-
-      if (data.turbo === "No") {
-        gltf.nodes["Support_Arm_02_Conf"].visible = false;
-        gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      } else {
-        gltf.nodes["Support_Arm_02_Conf"].visible = true;
-        gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      }
-    }
-
-    if (data.arm === "B250 Maggiorato") {
-      gltf.nodes["Support_Arm_01"].visible = false;
-      gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      gltf.nodes["Support_arm_02"].visible = true;
-      gltf.nodes["Support_Arm_02_Conf"].visible = false;
-      gltf.nodes["Arm_01"].visible = false;
-      gltf.nodes["Arm_02"].visible = false;
-      gltf.nodes["3RD_ARM"].visible = false;
-      gltf.nodes["4TH_ARM"].visible = true;
-      gltf.nodes["Secondary_Close"].visible = false;
-      gltf.nodes["Secondary_Close003"].visible = false;
-
-      if (data.turbo === "No") {
-        gltf.nodes["Support_Arm_02_Conf"].visible = false;
-        gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      } else {
-        gltf.nodes["Support_Arm_02_Conf"].visible = true;
-        gltf.nodes["Support_Arm_01_Conf"].visible = false;
-      }
-    }
-
-    if (data.wheel === "Stradal") {
-      gltf.nodes["Stradal_Wheel_First"].visible = true;
-      gltf.nodes["Stradal_Wheel_Second"].visible = true;
-    } else {
-      gltf.nodes["Stradal_Wheel_First"].visible = false;
-      gltf.nodes["Stradal_Wheel_Second"].visible = false;
-    }
-
-    if (data.wheel === "Normal") {
-      gltf.nodes["Normal_Wheel_First"].visible = true;
-      gltf.nodes["Normal_Wheel_Second"].visible = true;
-    } else {
-      gltf.nodes["Normal_Wheel_First"].visible = false;
-      gltf.nodes["Normal_Wheel_Second"].visible = false;
-    }
-
-    if (data.wheel === "Oversized") {
-      gltf.nodes["Oversized_Wheel_First"].visible = true;
-      gltf.nodes["Oversized_Wheel_Second"].visible = true;
-    } else {
-      gltf.nodes["Oversized_Wheel_First"].visible = false;
-      gltf.nodes["Oversized_Wheel_Second"].visible = false;
-    }
-
-    if (data.assisted_steering === "No") {
-      gltf.nodes["Assisted_Steering"].visible = false;
-    } else {
-      gltf.nodes["Assisted_Steering"].visible = true;
-    }
-
-    if (data.second_stand_foot === "No") {
-      gltf.nodes["Seconf_Stand_Foot"].visible = false;
-    } else {
-      gltf.nodes["Seconf_Stand_Foot"].visible = true;
-    }
-
-    if (data.second_exit === "No") {
-      gltf.nodes["Secondary_Close001"].visible = false;
-      gltf.nodes["Secondary_Close002"].visible = false;
-    } else {
-      gltf.nodes["Secondary_Close001"].visible = true;
-      gltf.nodes["Secondary_Close002"].visible = true;
-    }
-
-    if (data.top_azoto === "No") {
-      gltf.nodes["Top_Cylinder"].visible = false;
-    } else {
-      gltf.nodes["Top_Cylinder"].visible = true;
-    }
-
-    if (data.suspension === "No") {
-      gltf.nodes["Suspension"].visible = false;
-    } else {
-      gltf.nodes["Suspension"].visible = true;
-    }
-
-    if (data.sollevator === "No") {
-      gltf.nodes["Solivator"].visible = false;
-      gltf.nodes["Separate_Funnel_Bar"].visible = true;
-    } else {
-      gltf.nodes["Solivator"].visible = true;
-      gltf.nodes["Separate_Funnel_Bar"].visible = false;
-    }
-
-    if (data.backConf === "Ripper01") {
-      if (data.sollevator === "Si") {
-        gltf.nodes["Configuration_02"].visible = true;
-        gltf.nodes["Configuration_12"].visible = false;
-      } else {
-        gltf.nodes["Configuration_02"].visible = false;
-        gltf.nodes["Configuration_12"].visible = true;
-        gltf.nodes["Separate_Funnel_Bar"].visible = false;
-      }
-    } else {
-      gltf.nodes["Configuration_02"].visible = false;
-      gltf.nodes["Configuration_12"].visible = false;
-    }
-
-    if (data.backConf === "Ripper02") {
-      if (data.sollevator === "Si") {
-        gltf.nodes["Configuration_03"].visible = true;
-        gltf.nodes["Configuration_05"].visible = false;
-      } else {
-        gltf.nodes["Configuration_03"].visible = false;
-        gltf.nodes["Configuration_05"].visible = true;
-        gltf.nodes["Separate_Funnel_Bar"].visible = false;
-      }
-    } else {
-      gltf.nodes["Configuration_03"].visible = false;
-      gltf.nodes["Configuration_05"].visible = false;
-    }
-
-    if (data.backConf === "Ripper03") {
-      if (data.sollevator === "Si") {
-        gltf.nodes["Configuration_06"].visible = true;
-      } else {
-        gltf.nodes["Configuration_06"].visible = false;
-      }
-    } else {
-      gltf.nodes["Configuration_06"].visible = false;
-    }
-
-    if (data.backConf === "Dischiera02") {
-      if (data.sollevator === "Si") {
-        gltf.nodes["Configuration_08"].visible = true;
-      } else {
-        gltf.nodes["Configuration_08"].visible = false;
-      }
-    } else {
-      gltf.nodes["Configuration_08"].visible = false;
-    }
-
-    if (data.backConf === "Dischiera01") {
-      if (data.sollevator === "Si") {
-        gltf.nodes["Configuration_09"].visible = true;
-      } else {
-        gltf.nodes["Configuration_09"].visible = false;
-      }
-    } else {
-      gltf.nodes["Configuration_09"].visible = false;
-    }
-
-    if (data.barraRaso === "Daniele") {
-      gltf.nodes["Configuration_04"].visible = true;
-    } else {
-      gltf.nodes["Configuration_04"].visible = false;
-    }
-
-    if (data.barraRaso === "grande") {
-      gltf.nodes["Configuration_10"].visible = true;
-      gltf.nodes["Separate_Funnel_Bar"].visible = false;
-    } else {
-      gltf.nodes["Configuration_10"].visible = false;
-    }
-
-    if (data.barraRaso === "6uscite") {
-      gltf.nodes["Configuration_07"].visible = true;
-    } else {
-      gltf.nodes["Configuration_07"].visible = false;
-    }
-
-    if (data.barraRaso === "sollevator") {
-      gltf.nodes["Configuration_11"].visible = true;
-    } else {
-      gltf.nodes["Configuration_11"].visible = false;
-    }
-  }, [color, data, model]);
-
-  return (
-    <>
-      {/* <OrbitControls
-        enablePan={false}
-        enableZoom={true}
-        maxPolarAngle={Math.PI / 2.1}
-        minPolarAngle={Math.PI / 2.1}
-      /> */}
-      <mesh position={[0, 0, 0]} scale={[1, 1, 1]} castShadow>
-        <primitive object={gltf.scene} />
-      </mesh>
-    </>
-  );
-};
+const MeshBotte = lazy(() => import('./MeshBotte'));
 
 export default function TrailerCanvas() {
   const div = useRef<HTMLDivElement>(null);
@@ -350,7 +38,7 @@ export default function TrailerCanvas() {
 
   return (
     <div className="w-full h-full relative" ref={div}>
-      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: true }} dpr={[1.6, 2]}  shadows>
+      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: true }} dpr={[1, Math.min(window.devicePixelRatio, 2)]} shadows>
         <Suspense fallback={<CanvasLoader />}>
           <Center>
             <MeshBotte />
@@ -389,68 +77,21 @@ export default function TrailerCanvas() {
             enableZoom={true}
             minPolarAngle={Math.PI / 2.5}
             maxPolarAngle={Math.PI / 2.1}
-            enableDamping={true}     // Abilita il damping
-            dampingFactor={1}      // Fattore di smorzamento
-            minDistance={15}         // Distanza minima della telecamera
-            maxDistance={35}    
-            panSpeed={1}     
+            enableDamping={true}
+            dampingFactor={0.1}
+            minDistance={15}
+            maxDistance={40}
+            panSpeed={1}
           />
           <Leva hidden />
           <PerformanceMonitor />
           {/* <CameraControls /> */}
-          <PerspectiveCamera position={[-20, 10, 25]} fov={50} makeDefault />
+          <PerspectiveCamera position={[-20, 10, 40]} fov={50} makeDefault />
         </Suspense>
       </Canvas>
     </div>
   );
 }
-
-// const CameraControls= () => {
-//   const { camera, gl } = useThree();
-//   const controls = useRef<OrbitControls>();
-
-//   useEffect(() => {
-//     const currentControls = new OrbitControls(camera, gl.domElement);
-//     controls.current = currentControls;
-
-//     currentControls.enablePan = true;
-//     currentControls.zoomToCursor = true;
-//     currentControls.enableZoom = true;
-//     currentControls.minPolarAngle = Math.PI / 2.5;
-//     currentControls.maxPolarAngle = Math.PI / 2.1;
-//     currentControls.enableDamping = true;
-//     currentControls.dampingFactor = 1;
-//     currentControls.minDistance = 20;
-//     currentControls.maxDistance = 35;
-
-//     // Limiti del pan
-//     const panLimits = {
-//       minX: -10,
-//       maxX: 10,
-//       minY: -5,
-//       maxY: 5
-//     };
-
-//     // Funzione per applicare i limiti di pan
-//     const applyPanLimits = () => {
-//       const target = currentControls.target;
-//       if (target.x < panLimits.minX) target.x = panLimits.minX;
-//       if (target.x > panLimits.maxX) target.x = panLimits.maxX;
-//       if (target.y < panLimits.minY) target.y = panLimits.minY;
-//       if (target.y > panLimits.maxY) target.y = panLimits.maxY;
-//     };
-
-//     // Listener per gli eventi di controllo
-//     currentControls.addEventListener('change', applyPanLimits);   
-
-//     return () => {
-//       currentControls.removeEventListener('change', applyPanLimits);
-//       currentControls.dispose();
-//     };
-//   }, [camera, gl]);
-
-//   return null;
-// };
 
 
 function Hangar() {
@@ -465,11 +106,13 @@ function Hangar() {
     wallNormalMap,
     wallRoughnessMap,
     wallDisplacementMap,
+    logoMap
   ] = useTexture([
     '/textures/wall7/PavingStones126B_1K-JPG_Color.jpg',
     '/textures/wall7/PavingStones126B_1K-JPG_Roughness.jpg',
     '/textures/wall7/PavingStones126B_1K-JPG_NormalGL.jpg',
     '/textures/wall7/PavingStones126B_1K-JPG_Displacement.jpg',
+    '/logo.png'
   ]); // Sostituisci con il percorso della tua texture
 
   // Ripeti la texture per un effetto più realistico
@@ -496,7 +139,7 @@ function Hangar() {
   return (
     <>
       {/* Pavimento */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4.1, 0]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4.1, 0]} receiveShadow frustumCulled={true}>
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial
           map={colorMap}
@@ -508,7 +151,7 @@ function Hangar() {
       </mesh>
 
       {/* Pareti */}
-      <mesh position={[0, 21, -50]} receiveShadow>
+      <mesh position={[0, 21, -50]} receiveShadow frustumCulled={true}>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -519,7 +162,7 @@ function Hangar() {
         />
       </mesh>
 
-      <mesh position={[-50, 21, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+      <mesh position={[-50, 21, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow frustumCulled={true}>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -530,7 +173,7 @@ function Hangar() {
         />
       </mesh>
 
-      <mesh position={[50, 21, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+      <mesh position={[50, 21, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow frustumCulled={true}>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -541,7 +184,7 @@ function Hangar() {
         />
       </mesh>
 
-      <mesh position={[0, 21, 50]} receiveShadow>
+      <mesh position={[0, 21, 50]} receiveShadow frustumCulled={true}>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -550,6 +193,30 @@ function Hangar() {
           displacementMap={wallDisplacementMap}
           displacementScale={0.1}
         />
+      </mesh>
+
+      {/* Logo sulla parete posteriore */}
+      <mesh position={[0, 10, -49.7]} receiveShadow frustumCulled={true}>
+        <planeGeometry args={[20, 10]} />
+        <meshStandardMaterial map={logoMap} transparent />
+      </mesh>
+
+      {/* Logo sulla parete frontale */}
+      <mesh position={[0, 10, 49.7]} rotation={[0, Math.PI, 0]} receiveShadow frustumCulled={true}>
+        <planeGeometry args={[20, 10]} />
+        <meshStandardMaterial map={logoMap} transparent />
+      </mesh>
+
+      {/* Logo sulla parete destra */}
+      <mesh position={[49.7, 10, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+        <planeGeometry args={[20, 10]} />
+        <meshStandardMaterial map={logoMap} transparent />
+      </mesh>
+
+      {/* Logo sulla parete sinistra */}
+      <mesh position={[-49.7, 10, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+        <planeGeometry args={[20, 10]} />
+        <meshStandardMaterial map={logoMap} transparent />
       </mesh>
     </>
   );
