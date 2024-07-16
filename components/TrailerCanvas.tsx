@@ -1,6 +1,14 @@
 "use client";
 
-import { MutableRefObject, Suspense, useEffect, useRef, useState, useTransition, lazy } from "react";
+import {
+  MutableRefObject,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+  lazy,
+} from "react";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import {
   AccumulativeShadows,
@@ -21,59 +29,86 @@ import { Leva, useControls } from "leva";
 import * as THREE from "three";
 import Button from "./Button";
 
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls } from "@react-three/drei";
 
-const MeshBotte = lazy(() => import('./MeshBotte'));
+const MeshBotte = lazy(() => import("./MeshBotte"));
 
 export default function TrailerCanvas() {
   const div = useRef<HTMLDivElement>(null);
 
+  const [isVisible, setIsVisible] = useState(false);
+
   const { color, model, data } = useTrailer();
 
-  const [shadowCounter, setShadowCounter] = useState(0);
-  
   useEffect(() => {
-    setShadowCounter(prev => prev + 1); 
-  }, [color, model, data])
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const canvasElement = document.querySelector("#canvas-container");
+    if (canvasElement) {
+      observer.observe(canvasElement);
+    }
+
+    return () => {
+      if (canvasElement) {
+        observer.unobserve(canvasElement);
+      }
+    };
+  }, []);
+
+  const [shadowCounter, setShadowCounter] = useState(0);
+
+  useEffect(() => {
+    setShadowCounter(prev => prev + 1);
+  }, [color, model, data]);
 
   return (
-    <div className="w-full h-full relative" ref={div}>
-      <Canvas gl={{ logarithmicDepthBuffer: true, antialias: true }} dpr={[1, Math.min(window.devicePixelRatio, 2)]} shadows>
-        <Suspense fallback={<CanvasLoader />}>
-          <Center>
+    <div id="canvas-container" className="w-full h-full relative" ref={div}>
+      {isVisible && (
+        <Canvas
+          gl={{ logarithmicDepthBuffer: true, antialias: true }}
+          dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+          shadows
+        >
+          {/* <Suspense fallback={<CanvasLoader />}> */}
+          <Suspense fallback={<CanvasLoader />}>
+          <ContactShadows resolution={512} frames={1} position={[0, -4.57, 0]} scale={15} blur={1} opacity={0.2} far={20} key={shadowCounter} /> 
             <MeshBotte />
-          </Center>
+          </Suspense>
           <Hangar />
           {/* <Environment preset="city" frames={Infinity} /> */}
-          <ContactShadows resolution={1024} frames={1} position={[0, -4, 0]} scale={15} blur={0.7} opacity={0.4} far={20} key={shadowCounter} />
           <ambientLight intensity={3.5} />
           <directionalLight
             position={[10, 50, 10]}
             intensity={3.5}
-            castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-            shadow-camera-far={100}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-          />  
+            // castShadow
+            // shadow-mapSize-width={1024}
+            // shadow-mapSize-height={1024}
+            // shadow-camera-far={100}
+            // shadow-camera-left={-50}
+            // shadow-camera-right={50}
+            // shadow-camera-top={50}
+            // shadow-camera-bottom={-50}
+          />
           <directionalLight
             position={[-10, 50, -10]}
             intensity={3.5}
-            castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-            shadow-camera-far={100}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-          /> 
+            // castShadow
+            // shadow-mapSize-width={1024}
+            // shadow-mapSize-height={1024}
+            // shadow-camera-far={100}
+            // shadow-camera-left={-50}
+            // shadow-camera-right={50}
+            // shadow-camera-top={50}
+            // shadow-camera-bottom={-50}
+          />
           <OrbitControls
             enablePan={false}
-            zoomToCursor={true}
+            zoomToCursor={false}
             enableZoom={true}
             minPolarAngle={Math.PI / 2.5}
             maxPolarAngle={Math.PI / 2.1}
@@ -87,32 +122,32 @@ export default function TrailerCanvas() {
           <PerformanceMonitor />
           {/* <CameraControls /> */}
           <PerspectiveCamera position={[-20, 10, 40]} fov={50} makeDefault />
-        </Suspense>
-      </Canvas>
+          {/* </Suspense> */}
+        </Canvas>
+      )}
     </div>
   );
 }
 
-
 function Hangar() {
   const [colorMap, normalMap, roughnessMap, displacementMap] = useTexture([
-    '/textures/wall6/Plaster003_1K-JPG_Color.jpg',
-    '/textures/wall6/Plaster003_1K-JPG_NormalGL.jpg',
-    '/textures/wall6/Plaster003_1K-JPG_Roughness.jpg',
-    '/textures/wall6/Plaster003_1K-JPG_Displacement.jpg'
+    "/textures/wall6/Plaster003_1K-JPG_Color.jpg",
+    "/textures/wall6/Plaster003_1K-JPG_NormalGL.jpg",
+    "/textures/wall6/Plaster003_1K-JPG_Roughness.jpg",
+    "/textures/wall6/Plaster003_1K-JPG_Displacement.jpg",
   ]); // Sostituisci con il percorso della tua texture
   const [
     wallColorMap,
     wallNormalMap,
     wallRoughnessMap,
     wallDisplacementMap,
-    logoMap
+    logoMap,
   ] = useTexture([
-    '/textures/wall7/PavingStones126B_1K-JPG_Color.jpg',
-    '/textures/wall7/PavingStones126B_1K-JPG_Roughness.jpg',
-    '/textures/wall7/PavingStones126B_1K-JPG_NormalGL.jpg',
-    '/textures/wall7/PavingStones126B_1K-JPG_Displacement.jpg',
-    '/logo.png'
+    "/textures/wall7/PavingStones126B_1K-JPG_Color.jpg",
+    "/textures/wall7/PavingStones126B_1K-JPG_Roughness.jpg",
+    "/textures/wall7/PavingStones126B_1K-JPG_NormalGL.jpg",
+    "/textures/wall7/PavingStones126B_1K-JPG_Displacement.jpg",
+    "/logo.png",
   ]); // Sostituisci con il percorso della tua texture
 
   // Ripeti la texture per un effetto più realistico
@@ -131,15 +166,20 @@ function Hangar() {
   wallRoughnessMap.wrapS = wallRoughnessMap.wrapT = THREE.RepeatWrapping;
   wallDisplacementMap.wrapS = wallDisplacementMap.wrapT = THREE.RepeatWrapping;
 
-  wallColorMap.repeat.set(2.5, 1.5);
-  wallNormalMap.repeat.set(2.5, 1.5);
-  wallRoughnessMap.repeat.set(2.5, 1.5);
-  wallDisplacementMap.repeat.set(2.5, 1.5);
+  wallColorMap.repeat.set(2, 1);
+  wallNormalMap.repeat.set(2, 1);
+  wallRoughnessMap.repeat.set(2, 1);
+  wallDisplacementMap.repeat.set(2, 1);
 
   return (
     <>
       {/* Pavimento */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4.1, 0]} receiveShadow frustumCulled={true}>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -4.6, 0]}
+        receiveShadow
+        frustumCulled={true}
+      >
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial
           map={colorMap}
@@ -151,7 +191,7 @@ function Hangar() {
       </mesh>
 
       {/* Pareti */}
-      <mesh position={[0, 21, -50]} receiveShadow frustumCulled={true}>
+      <mesh position={[0, 16, -50]} receiveShadow frustumCulled={true}>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -162,7 +202,12 @@ function Hangar() {
         />
       </mesh>
 
-      <mesh position={[-50, 21, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow frustumCulled={true}>
+      <mesh
+        position={[-50, 16, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        receiveShadow
+        frustumCulled={true}
+      >
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -173,7 +218,12 @@ function Hangar() {
         />
       </mesh>
 
-      <mesh position={[50, 21, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow frustumCulled={true}>
+      <mesh
+        position={[50, 16, 0]}
+        rotation={[0, -Math.PI / 2, 0]}
+        receiveShadow
+        frustumCulled={true}
+      >
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -184,7 +234,7 @@ function Hangar() {
         />
       </mesh>
 
-      <mesh position={[0, 21, 50]} receiveShadow frustumCulled={true}>
+      <mesh position={[0, 16, 50]} receiveShadow frustumCulled={true}>
         <boxGeometry args={[100, 50, 0.1]} />
         <meshStandardMaterial
           map={wallColorMap}
@@ -196,26 +246,34 @@ function Hangar() {
       </mesh>
 
       {/* Logo sulla parete posteriore */}
-      <mesh position={[0, 10, -49.7]} receiveShadow frustumCulled={true}>
-        <planeGeometry args={[20, 10]} />
+      {/* <mesh position={[0, 15, -49.7]} receiveShadow frustumCulled={true}>
+        <planeGeometry args={[80, 30]} />
         <meshStandardMaterial map={logoMap} transparent />
-      </mesh>
+      </mesh> */}
 
       {/* Logo sulla parete frontale */}
-      <mesh position={[0, 10, 49.7]} rotation={[0, Math.PI, 0]} receiveShadow frustumCulled={true}>
-        <planeGeometry args={[20, 10]} />
+      {/* <mesh position={[0, 15, 49.7]} rotation={[0, Math.PI, 0]} receiveShadow frustumCulled={true}>
+        <planeGeometry args={[80, 30]} />
         <meshStandardMaterial map={logoMap} transparent />
-      </mesh>
+      </mesh> */}
 
       {/* Logo sulla parete destra */}
-      <mesh position={[49.7, 10, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
-        <planeGeometry args={[20, 10]} />
+      <mesh
+        position={[49.7, 15, 0]}
+        rotation={[0, -Math.PI / 2, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[60, 20]} />
         <meshStandardMaterial map={logoMap} transparent />
       </mesh>
 
       {/* Logo sulla parete sinistra */}
-      <mesh position={[-49.7, 10, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
-        <planeGeometry args={[20, 10]} />
+      <mesh
+        position={[-49.7, 15, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[60, 20]} />
         <meshStandardMaterial map={logoMap} transparent />
       </mesh>
     </>

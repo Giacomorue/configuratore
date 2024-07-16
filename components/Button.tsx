@@ -7,7 +7,7 @@ function Button({
 }) {
   return (
     <div
-      className={`border-2 rounded-md px-12 py-6 cursor-pointer ${isActive ? "border-red-500": "border-neutral-400"}`}
+      className={`rounded-xs border-2 px-16 py-6 cursor-pointer ${isActive? 'bg-red-500 text-white border-red-500' : 'bg-white text hover:border-red-500'}`}
       onClick={onChange}
     >
       {text}

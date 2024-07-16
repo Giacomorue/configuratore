@@ -20,6 +20,15 @@ const MeshBotte = () => {
   );
 
   useEffect(() => {
+    gltf.scene.traverse((child) => {
+      if (child) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }, [gltf]);
+
+  useEffect(() => {
     gltf.nodes["Main_Body"].visible = true;
     gltf.nodes["Front_Configuration_02"].visible = true;
     // gltf.nodes["Motor1"].visible = false;
