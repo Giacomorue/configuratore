@@ -3,6 +3,7 @@ import WorkboxPlugin from "workbox-webpack-plugin";
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
+      config.optimization.minimize = true;
       config.plugins.push(
         new WorkboxPlugin.InjectManifest({
           swSrc: "./sw.js",

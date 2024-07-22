@@ -264,7 +264,7 @@ function Hangar() {
         receiveShadow
       >
         <planeGeometry args={[60, 20]} />
-        <meshStandardMaterial map={logoMap} transparent />
+        <meshStandardMaterial map={logoMap} transparent opacity={0.5} />
       </mesh>
 
       {/* Logo sulla parete sinistra */}
@@ -274,7 +274,7 @@ function Hangar() {
         receiveShadow
       >
         <planeGeometry args={[60, 20]} />
-        <meshStandardMaterial map={logoMap} transparent />
+        <meshStandardMaterial map={logoMap} transparent opacity={0.5} />
       </mesh>
     </>
   );

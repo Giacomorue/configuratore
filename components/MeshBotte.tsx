@@ -5,6 +5,7 @@ import { useTrailer } from "@/hooks/useTrailer";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useLoader } from "@react-three/fiber";
+import { Material, Mesh, Texture } from "three";
 
 const MeshBotte = () => {
   const { color, data, model } = useTrailer();
@@ -19,14 +20,46 @@ const MeshBotte = () => {
     }
   );
 
-  useEffect(() => {
-    gltf.scene.traverse((child) => {
-      if (child) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-  }, [gltf]);
+  // useEffect(() => {
+  //   gltf.scene.traverse((child) => {
+  //     if (child) {
+  //       child.castShadow = true;
+  //       child.receiveShadow = true;
+  //     }
+  //   });
+  // }, [gltf]);
+
+  // useEffect(() => {
+  //   return () => {
+  //     if (gltf.scene) {
+  //       gltf.scene.traverse((child) => {
+  //         if ((child as Mesh).isMesh) {
+  //           const mesh = child as Mesh;
+  //           mesh.geometry.dispose();
+  //           if ((mesh.material as Material).isMaterial) {
+  //             cleanMaterial(mesh.material as Material);
+  //           } else {
+  //             // In caso di materiali multipli
+  //             (mesh.material as Material[]).forEach(cleanMaterial);
+  //           }
+  //         }
+  //       });
+  //     }
+  //   };
+  // }, [gltf]);
+
+  // const cleanMaterial = (material: Material) => {
+  //   material.dispose();
+
+  //   // Rimuovere le texture
+  //   for (const key in material) {
+  //     const value = material[key as keyof Material];
+  //     if (value && (value as Texture).isTexture) {
+  //       (value as Texture).dispose();
+  //     }
+  //   }
+  // };
+
 
   useEffect(() => {
     gltf.nodes["Main_Body"].visible = true;
