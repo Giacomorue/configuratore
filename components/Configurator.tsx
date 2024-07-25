@@ -31,7 +31,6 @@ function Configurator() {
       <div className="w-full h-full  overflow-y-auto pt-10">
         <SelectorSiNo
           title="Modello"
-          description="Scegli il modello del rimorchio che stai per andare a configurare"
         >
           <Button
             text="No"
@@ -45,7 +44,7 @@ function Configurator() {
           />
         </SelectorSiNo>
 
-        <SelectorList title="Accessorio posteriore" description="Aggiungi un accessorio posteriore al tuo rimorchio">
+        <SelectorList title="Accessorio posteriore">
           <ButtonList
             text="No"
             onChange={() => setModel("1")}
